@@ -4,7 +4,7 @@ Repo for the Advent of Code 2022
 * Finally start utilizing github
 * Practice Git
 * Practice different languages
-* Take part of the Discord AOC event
+* Take part of the Faculty Discord AOC event
 * Slack off during university
 
 ## Day 1
@@ -26,3 +26,9 @@ Solution in D1 folder
 #### Possible optimizations/improvements
 * Add a check if vector is of size 3, if less, dont remove last element, if more, remove until of size 3
 * Import data directly from web (IDK if possible with c++, in python probably with bs4)
+
+#### Day 1 Wrap Up
+* Practiced C++ for the first time in a long while
+* Tried to use modern C++ techniques (`std::reduce`) 
+* Took some time for adjustment
+* Considering wether to use Python or JS for some future tasks
