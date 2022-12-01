@@ -1,5 +1,11 @@
 # AOC2022
 Repo for the Advent of Code 2022
+#### Goals:
+* Finally start utilizing github
+* Practice Git
+* Practice different languages
+* Take part of the Discord AOC event
+* Slack off during university
 
 ## Day 1
 https://adventofcode.com/2022/day/1
