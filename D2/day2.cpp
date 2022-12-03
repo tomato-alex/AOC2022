@@ -4,8 +4,9 @@
 #include <map>
 #include <utility>
 
-void xyz(std::string data, int &score, std::map<char, int> scores)
+int xyz(const std::string data, const std::map<char, int> scores)
 {
+    int score = 0;
     if (data.at(0) - static_cast<char>(data.at(2) - 23) == -1 || data.at(0) - static_cast<char>(data.at(2) - 23) == 2)
     {
         score += 6;
@@ -15,9 +16,11 @@ void xyz(std::string data, int &score, std::map<char, int> scores)
         score += 3;
     }
     score += scores.at(static_cast<char>(data.at(2) - 23));
+    return score;
 }
-void wld(std::string data, int &score, std::map<char, int> scores)
+int wld(const std::string data, const std::map<char, int> scores)
 {
+    int score = 0;
     char play = ' ';
     switch (data.at(2))
     {
@@ -34,6 +37,7 @@ void wld(std::string data, int &score, std::map<char, int> scores)
         break;
     }
     score += scores.at(play);
+    return score;
 }
 
 int main()
@@ -46,8 +50,8 @@ int main()
     char play;
     while (getline(played, data))
     {
-        xyz(data, score_xyz, scores);
-        wld(data, score_wld, scores);
+        score_xyz += xyz(data, scores);
+        score_wld += wld(data, scores);
     }
     std::cout << score_xyz << " " << score_wld;
     return 0;
