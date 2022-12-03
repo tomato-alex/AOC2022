@@ -1,0 +1,9 @@
+A-B = -1 b wins
+A-C = -2 c looses
+B-c = -1 c wins
+B-a = 1 a looses
+C-a = 2 a wins
+c-b = 1 b looses
+A rock 
+b paper
+c sciccors
