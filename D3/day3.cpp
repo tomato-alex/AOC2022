@@ -13,8 +13,6 @@ std::uint64_t stringSplitSortCalc(const std::string data)
     std::string s1 = data.substr(0, data.length() / 2);
     std::string s2 = data.substr(data.length() / 2, data.length());
     std::uint64_t total{0};
-    std::sort(s1.begin(), s1.end());
-    std::sort(s2.begin(), s2.end());
 
     std::cout << data << " = " << s1 << " " << s2;
     for (auto i : s1)
@@ -29,9 +27,6 @@ std::uint64_t stringSplitSortCalc(const std::string data)
             {
                 total += static_cast<int>(i - 'A') + 27;
             }
-
-            s1.replace(s1.find(i), 1, "_");
-            s2.replace(s2.find(i), 1, "_");
             break;
         }
     }
@@ -75,7 +70,6 @@ int main()
             tmp.clear();
         }
     }
-    // total = Part2(tmp);
     std::cout << total << std::endl;
     return 0;
 }
