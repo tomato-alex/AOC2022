@@ -62,6 +62,39 @@ This is very low level C++, introduce abstractions but it doesn't make sense imh
 * Made mistakes because i didn't spend time thinking beforehand
 * `std::pair` threw a weird error trying to convert an rvalue to an lvalue whereas it wasn't supposed to do that in the first place, so i need to investigate
 
+## Day 3
+https://adventofcode.com/2022/day/3
+Solution in D3 folder
+#### Requirements:
+* T1
+  * Split string into substrings
+  * Compare for equal character
+  * Convert equal character to num (priority)
+  * Sum up all priorities
+* T2
+  * Divide dataset into sets of 3 strings
+  * Find matching char between strings of that set
+  * Convert char to num (priority)
+  * Sum up all priorities
+
+#### Approach:
+* 2 Functions
+* Divide string using `std::string::substr()`
+* Loop through first substring
+* If match convert char to priority and break loop
+* Sum up
+
+#### Possible optimizations/improvements
+* Pass the entire dataset to the function
+* Redo the substr to be faster
+* Divide the functions into more subfunctions to remove code repetition
+
+#### Day 3 Wrap Up
+* Practiced `std::string` methods and working with strings
+* Today I found the solution relatively fast, but a bug was keeping me back
+* Thinking before doing saved me a lot of time
+
+
 ## Day <x>
 https://adventofcode.com/2022/day/<x>
 Solution in D<x> folder
