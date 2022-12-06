@@ -1,17 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
-#include <utility>
-#include <algorithm>
-#include <numeric>
 #include <vector>
-#include <set>
 #include <sstream>
 #include <chrono>
 #include <deque>
-
-// TODO convert vector of vectors to vector of deques for faster poping
 
 enum Mode
 {
@@ -41,29 +34,7 @@ std::vector<int> dataPreprocess(const std::string &data)
     return args;
 }
 
-std::vector<std::vector<std::string>> invTranspose(const std::vector<std::vector<std::string>> &tp)
-{
-    std::vector<std::vector<std::string>> invtmp;
-    for (int i = tp.size() - 1; i >= 0; --i)
-    {
-        invtmp.push_back(tp.at(i));
-    }
-    int rows = invtmp.size();
-    if (rows == 0)
-        return {{}};
-    int cols = invtmp[0].size();
-    std::vector<std::vector<std::string>> r(cols, std::vector<std::string>(rows));
-    for (int i = 0; i < rows; ++i)
-    {
-        for (int j = 0; j < cols; ++j)
-        {
-            r[j][i] = invtmp[i][j];
-        }
-    }
-    return r;
-}
-
-void printMatrix(const std::vector<std::vector<std::string>> &matrix)
+void printMatrix2(const std::vector<std::deque<std::string>> &matrix)
 {
     for (auto i : matrix)
     {
@@ -86,10 +57,10 @@ int findLongest(const std::vector<std::vector<std::string>> &matrix)
     return longest;
 }
 
-std::vector<std::vector<std::string>> VStoVVSTransform(const std::vector<std::string> &tmpinput)
+std::vector<std::deque<std::string>> VStoVDSTransform(const std::vector<std::string> &tp)
 {
     std::vector<std::vector<std::string>> inputdata;
-    for (auto row : tmpinput)
+    for (auto row : tp)
     {
         std::string shelper = "";
         std::vector<std::string> vhelper;
@@ -130,14 +101,7 @@ std::vector<std::vector<std::string>> VStoVVSTransform(const std::vector<std::st
         inputdata.push_back(vhelper);
     }
     inputdata.pop_back();
-    int longest = 0;
-    for (auto i : inputdata)
-    {
-        if (i.size() > longest)
-        {
-            longest = i.size();
-        }
-    }
+    int longest = findLongest(inputdata);
     for (auto i : inputdata)
     {
         while (i.size() < longest)
@@ -145,50 +109,54 @@ std::vector<std::vector<std::string>> VStoVVSTransform(const std::vector<std::st
             i.push_back("   ");
         }
     }
-    return inputdata;
+
+    std::vector<std::deque<std::string>> res(inputdata[0].size());
+    for (auto &row : inputdata)
+    {
+        int cntr = 0;
+        for (auto &cell : row)
+        {
+            if (cell != "   ")
+            {
+                res[cntr].push_back(cell);
+            }
+            ++cntr;
+            if (cntr >= tp[0].size())
+            {
+                break;
+            }
+        }
+    }
+    return res;
 }
 
-std::vector<std::vector<std::string>> processMatrix(std::vector<std::vector<std::string>> inverseds, std::vector<int> args, Mode m)
+std::vector<std::deque<std::string>> processMatrix2(std::vector<std::deque<std::string>> matrix, const std::vector<int> &args, Mode m)
 {
-    std::vector<std::string> tmp{};
-    for (int i = inverseds.at(args.at(1) - 1).size() - 1; i >= 0; --i)
+    if (m == Mode::append)
     {
-        if (inverseds.at(args.at(1) - 1).at(i) != "   ")
+        int cntr = args[0];
+        while (cntr-- > 0)
         {
-            tmp.push_back(inverseds.at(args.at(1) - 1).at(i));
-            inverseds.at(args.at(1) - 1).at(i) = "   ";
-            --args.at(0);
-        }
-        if (args.at(0) == 0)
-        {
-            break;
+            matrix[args[2] - 1].push_front(matrix[args[1] - 1].front());
+            matrix[args[1] - 1].pop_front();
         }
     }
-    for (int i = inverseds.at(args.at(2) - 1).size() - 1; i >= 0; --i)
+    if (m == Mode::keep)
     {
-        if (inverseds.at(args.at(2) - 1).at(i) != "   ")
+        int cntr = args[0];
+        std::deque<std::string> tmp(cntr);
+        while (cntr-- != 0)
         {
-            break;
+            tmp.push_back(matrix[args[1] - 1].front());
+            matrix[args[1] - 1].pop_front();
         }
-        inverseds.at(args.at(2) - 1).pop_back();
-    }
-    if (Mode::keep)
-    {
-        reverse(tmp.begin(), tmp.end());
-    }
-    for (auto i : tmp)
-    {
-        inverseds.at(args.at(2) - 1).push_back(i);
-    }
-    int longest = findLongest(inverseds);
-    for (auto i : inverseds)
-    {
-        while (i.size() < longest)
+        while (!tmp.empty())
         {
-            i.push_back("   ");
+            matrix[args[2] - 1].push_front(tmp.back());
+            tmp.pop_back();
         }
     }
-    return inverseds;
+    return matrix;
 }
 
 int main()
@@ -198,7 +166,7 @@ int main()
     std::string data;
 
     std::vector<std::string> tmpinput;
-    std::vector<std::vector<std::string>> inputdata;
+    std::vector<std::deque<std::string>> inputdata2;
     InputMode inputMode = InputMode::m1;
     while (getline(items, data))
     {
@@ -211,18 +179,16 @@ int main()
             }
 
             inputMode = InputMode::m2;
-            inputdata = VStoVVSTransform(tmpinput);
-            inputdata = invTranspose(inputdata);
+            inputdata2 = VStoVDSTransform(tmpinput);
         }
         else if (inputMode == InputMode::m2)
         {
-            // std::cout << "Im here!\n";
             std::vector<int> args = dataPreprocess(data);
-            inputdata = processMatrix(inputdata, args, Mode::append);
+            inputdata2 = processMatrix2(inputdata2, args, Mode::append);
         }
     }
 
-    printMatrix(inputdata);
+    printMatrix2(inputdata2);
 
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
