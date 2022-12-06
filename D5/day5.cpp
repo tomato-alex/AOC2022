@@ -144,7 +144,7 @@ std::vector<std::deque<std::string>> processMatrix2(std::vector<std::deque<std::
     if (m == Mode::keep)
     {
         int cntr = args[0];
-        std::deque<std::string> tmp(cntr);
+        std::deque<std::string> tmp;
         while (cntr-- != 0)
         {
             tmp.push_back(matrix[args[1] - 1].front());
@@ -184,7 +184,7 @@ int main()
         else if (inputMode == InputMode::m2)
         {
             std::vector<int> args = dataPreprocess(data);
-            inputdata2 = processMatrix2(inputdata2, args, Mode::append);
+            inputdata2 = processMatrix2(inputdata2, args, Mode::keep);
         }
     }
 
