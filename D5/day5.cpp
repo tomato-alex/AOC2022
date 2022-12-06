@@ -8,11 +8,20 @@
 #include <vector>
 #include <set>
 #include <sstream>
+#include <chrono>
+#include <deque>
+
+// TODO convert vector of vectors to vector of deques for faster poping
 
 enum Mode
 {
     keep,
     append
+};
+enum InputMode
+{
+    m1,
+    m2
 };
 
 std::vector<int> dataPreprocess(const std::string data)
@@ -76,6 +85,69 @@ int findLongest(std::vector<std::vector<std::string>> matrix)
     }
     return longest;
 }
+
+std::vector<std::vector<std::string>> VStoVVSTransform(std::vector<std::string> tmpinput)
+{
+    std::vector<std::vector<std::string>> inputdata;
+    for (auto row : tmpinput)
+    {
+        std::string shelper = "";
+        std::vector<std::string> vhelper;
+        int cntr = 0;
+
+        for (auto cell : row)
+        {
+            if (cell != ' ' && cntr == 0)
+            {
+                shelper += cell;
+                if (cell == ']')
+                {
+                    vhelper.push_back(shelper);
+                    shelper = "";
+                }
+            }
+            if (cell == ' ' && cntr == 0)
+            {
+                shelper = "";
+                ++cntr;
+            }
+            if (cell == ' ' && cntr > 0)
+            {
+                if (cntr == 4)
+                {
+                    vhelper.push_back("   ");
+                    cntr = 0;
+                }
+                ++cntr;
+            }
+            if (cell != ' ' && cntr > 0)
+            {
+                shelper += cell;
+                cntr = 0;
+            }
+        }
+
+        inputdata.push_back(vhelper);
+    }
+    inputdata.pop_back();
+    int longest = 0;
+    for (auto i : inputdata)
+    {
+        if (i.size() > longest)
+        {
+            longest = i.size();
+        }
+    }
+    for (auto i : inputdata)
+    {
+        while (i.size() < longest)
+        {
+            i.push_back("   ");
+        }
+    }
+    return inputdata;
+}
+
 std::vector<std::vector<std::string>> processMatrix(std::vector<std::vector<std::string>> inverseds, std::vector<int> args, Mode m)
 {
     std::vector<std::string> tmp{};
@@ -121,29 +193,41 @@ std::vector<std::vector<std::string>> processMatrix(std::vector<std::vector<std:
 
 int main()
 {
+    auto start = std::chrono::high_resolution_clock::now();
     std::ifstream items("inputday5.txt");
     std::string data;
 
-    std::vector<std::vector<std::string>> dataset{
-        {"[J]", "   ", "   ", "   ", "[F]", "[M]", "   ", "   ", "   "},
-        {"[Z]", "[F]", "   ", "[G]", "[Q]", "[F]", "   ", "   ", "   "},
-        {"[G]", "[P]", "   ", "[H]", "[Z]", "[S]", "[Q]", "   ", "   "},
-        {"[V]", "[W]", "[Z]", "[P]", "[D]", "[G]", "[P]", "   ", "   "},
-        {"[T]", "[D]", "[S]", "[Z]", "[N]", "[W]", "[B]", "[N]", "   "},
-        {"[D]", "[M]", "[R]", "[J]", "[J]", "[P]", "[V]", "[P]", "[J]"},
-        {"[B]", "[R]", "[C]", "[T]", "[C]", "[V]", "[C]", "[B]", "[P]"},
-        {"[N]", "[S]", "[V]", "[R]", "[T]", "[N]", "[G]", "[Z]", "[W]"}};
-
-    std::vector<std::vector<std::string>> inverseds{invTranspose(dataset)};
-
-    printMatrix(inverseds);
-
+    std::vector<std::string> tmpinput;
+    std::vector<std::vector<std::string>> inputdata;
+    InputMode inputMode = InputMode::m1;
     while (getline(items, data))
     {
-        std::vector<int> args = dataPreprocess(data);
-        inverseds = processMatrix(inverseds, args, Mode::append);
+        if (inputMode == InputMode::m1)
+        {
+            if (data != "")
+            {
+                tmpinput.push_back(data);
+                continue;
+            }
+
+            inputMode = InputMode::m2;
+            inputdata = VStoVVSTransform(tmpinput);
+            inputdata = invTranspose(inputdata);
+        }
+        else if (inputMode == InputMode::m2)
+        {
+            // std::cout << "Im here!\n";
+            std::vector<int> args = dataPreprocess(data);
+            inputdata = processMatrix(inputdata, args, Mode::append);
+        }
     }
 
-    printMatrix(inverseds);
+    printMatrix(inputdata);
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: "
+              << duration.count() << " microseconds" << std::endl;
+
     return 0;
 }
