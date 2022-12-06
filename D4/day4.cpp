@@ -8,6 +8,7 @@
 #include <vector>
 #include <set>
 #include <sstream>
+#include <chrono>
 
 enum Mode
 {
@@ -15,7 +16,7 @@ enum Mode
     full
 };
 
-std::stringstream dataPreprocess(const std::string data)
+std::stringstream dataPreprocess(const std::string &data)
 {
     std::stringstream tmp;
     std::string tmps{data};
@@ -25,7 +26,7 @@ std::stringstream dataPreprocess(const std::string data)
     return tmp;
 }
 
-bool fullyContained(std::vector<int> data)
+bool fullyContained(const std::vector<int> &data)
 {
     if (data.size() != 4)
         return 0;
@@ -40,7 +41,7 @@ bool fullyContained(std::vector<int> data)
     return 0;
 }
 
-bool partiallyContained(std::vector<int> data)
+bool partiallyContained(const std::vector<int> &data)
 {
     if (data.size() != 4)
         return 0;
@@ -51,7 +52,7 @@ bool partiallyContained(std::vector<int> data)
     return 0;
 }
 
-bool checkContained(const std::string data, Mode mode)
+bool checkContained(const std::string &data, Mode mode)
 {
 
     std::stringstream datastream{dataPreprocess(data)};
@@ -81,6 +82,7 @@ bool checkContained(const std::string data, Mode mode)
 
 int main()
 {
+    auto start = std::chrono::high_resolution_clock::now();
     std::ifstream items("inputday4.txt");
     std::string data;
     std::uint64_t total{0};
@@ -90,5 +92,10 @@ int main()
         total += checkContained(data, Mode::partial);
     }
     std::cout << total << std::endl;
+
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Time taken by function: "
+              << duration.count() << " microseconds" << std::endl;
     return 0;
 }
