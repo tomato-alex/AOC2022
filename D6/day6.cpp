@@ -22,7 +22,7 @@ bool checkRepetitions2(const int limit, const int start, const std::string str)
 
 std::uint64_t noRepeatAfter(const std::string str, const int limit)
 {
-    for (std::uint64_t i{0}; i < str.size(); ++i)
+    for (std::uint64_t i{0}; i < str.size() - limit; ++i)
     {
         if (!checkRepetitions2(limit, i, str))
         {

@@ -149,6 +149,63 @@ Solution in D4 folder
 - Wrote down approach on paper before coding it
 - Have a reason to wake up and not stare at my phone for half an hour before I get up
 
+## Day 5
+
+https://adventofcode.com/2022/day/5
+Solution in D5 folder
+
+#### Requirements:
+
+- Parse a text with two input types
+- Move elements from one stack to another
+
+#### Approach:
+
+- 1st Approach
+  - hardcode initial dataset
+  - run through rest of input like in D4
+- 2nd Approach
+  - make two modes of input to read the dataset and then switch to read the commands
+- used a 2D matrix, which I inverted and transposed `invTranspose()`
+- fill in "empty" spots with `"   "` "empty" strings
+
+#### Possible optimizations/improvements
+
+- Switch from a `std::vector<std::vector<std::string>>` to a `std::vector<std::deque<std::string>>` or even `std::array<std::deque<std::string>>`
+  - This removes the need to invert vector when removing elements (i think)
+
+#### Day 5 Wrap Up
+
+- finally used matrix knowledge
+- took very long (1,5hrs)
+- input parsing with 2 modes was a great success
+- forgot `std::stack` and `std::queue/std::deque` exist, used `std::vector` which is slower
+
+## Day 6
+
+https://adventofcode.com/2022/day/6
+Solution in D6 folder
+
+#### Requirements:
+
+- parse a long string
+- find position on string where last `n` chars are non-repeating
+
+#### Approach:
+
+- read string
+- run through each char
+- check if subset of size `n` starting at char pos has repeating chars
+- repeat until subset with non-repeating chars is found
+
+#### Possible optimizations/improvements
+
+- use `std::bitset<>` instead of `int hash[]`
+
+#### Day 6 Wrap Up
+
+Honestly, probably there is a way to do it with bits, but it's good enough for now and i am pretty proud that i found a relatively quick to write and execute solution.
+
 ## Day <x>
 
 https://adventofcode.com/2022/day/<x>
