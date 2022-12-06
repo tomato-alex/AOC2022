@@ -3,43 +3,30 @@
 #include <string>
 #include <utility>
 #include <chrono>
-#include <deque>
 
-bool checkRepetitions(std::deque<char> chdeque, int limit)
+bool checkRepetitions2(const int limit, const int start, const std::string str)
 {
-    if (chdeque.size() < limit)
-    {
-        return false;
-    }
-    int hash[256] = {0};
+    int hash[26] = {false};
 
-    for (int i = 0; i < chdeque.size(); ++i)
+    for (int i = start; i < start + limit; ++i)
     {
-        int k = (int)chdeque.at(i);
-        ++hash[k];
-        if (hash[k] > 1)
+        int k = (int)(str.at(i) - 'a');
+        if (hash[k])
         {
             return true;
         }
+        hash[k] = true;
     }
     return false;
 }
 
-std::uint64_t noRepeatAfter(std::string str, int limit)
+std::uint64_t noRepeatAfter(const std::string str, const int limit)
 {
-    std::deque<char> charset;
-
     for (std::uint64_t i{0}; i < str.size(); ++i)
     {
-        charset.push_back(str.at(i));
-        if (charset.size() >= limit + 1)
+        if (!checkRepetitions2(limit, i, str))
         {
-            charset.pop_front();
-            if (!checkRepetitions(charset, limit))
-            {
-                return (i + 1);
-                break;
-            }
+            return (i + limit);
         }
     }
     return 0;
