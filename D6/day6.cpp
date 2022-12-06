@@ -4,13 +4,13 @@
 #include <utility>
 #include <chrono>
 
-bool checkRepetitions2(const int limit, const int start, const std::string str)
+bool checkRepetitions2(const int limit, const std::uint64_t start, const std::string &str)
 {
-    int hash[26] = {false};
+    bool hash[26] = {false};
 
-    for (int i = start; i < start + limit; ++i)
+    for (std::uint64_t i = start; i < start + limit; ++i)
     {
-        int k = (int)(str.at(i) - 'a');
+        int k = static_cast<int>(str[i] - 'a');
         if (hash[k])
         {
             return true;
