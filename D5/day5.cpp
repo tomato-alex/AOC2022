@@ -24,7 +24,7 @@ enum InputMode
     m2
 };
 
-std::vector<int> dataPreprocess(const std::string data)
+std::vector<int> dataPreprocess(const std::string &data)
 {
     std::vector<int> args;
     int tmpint;
@@ -41,7 +41,7 @@ std::vector<int> dataPreprocess(const std::string data)
     return args;
 }
 
-std::vector<std::vector<std::string>> invTranspose(std::vector<std::vector<std::string>> tp)
+std::vector<std::vector<std::string>> invTranspose(const std::vector<std::vector<std::string>> &tp)
 {
     std::vector<std::vector<std::string>> invtmp;
     for (int i = tp.size() - 1; i >= 0; --i)
@@ -63,7 +63,7 @@ std::vector<std::vector<std::string>> invTranspose(std::vector<std::vector<std::
     return r;
 }
 
-void printMatrix(std::vector<std::vector<std::string>> matrix)
+void printMatrix(const std::vector<std::vector<std::string>> &matrix)
 {
     for (auto i : matrix)
     {
@@ -75,7 +75,7 @@ void printMatrix(std::vector<std::vector<std::string>> matrix)
     }
 }
 
-int findLongest(std::vector<std::vector<std::string>> matrix)
+int findLongest(const std::vector<std::vector<std::string>> &matrix)
 {
     int longest = 0;
     for (auto i : matrix)
@@ -86,7 +86,7 @@ int findLongest(std::vector<std::vector<std::string>> matrix)
     return longest;
 }
 
-std::vector<std::vector<std::string>> VStoVVSTransform(std::vector<std::string> tmpinput)
+std::vector<std::vector<std::string>> VStoVVSTransform(const std::vector<std::string> &tmpinput)
 {
     std::vector<std::vector<std::string>> inputdata;
     for (auto row : tmpinput)
