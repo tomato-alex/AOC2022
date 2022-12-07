@@ -74,7 +74,7 @@ void printTree(DirNode *dir, const std::string &start, std::uint64_t &total)
     for (const auto &sdir : dir->getSubdir())
     {
         std::uint64_t TFS = sdir.second->getTFS();
-        std::cout << start << "Directory: " << sdir.first << " Size: " << TFS << " Subdir:\n";
+        // std::cout << start << "Directory: " << sdir.first << " Size: " << TFS << " Subdir:\n";
         if (TFS <= 100000)
         {
             total += TFS;
@@ -92,8 +92,6 @@ void getmindel(DirNode *dir, const std::uint64_t currmin, std::uint64_t &max)
         if (TFS >= currmin && TFS <= max)
         {
             max = TFS;
-            // std::cout << "Directory: " << sdir.first << " Size: " << TFS << " Subdir:\n";
-            // getmindel(sdir.second, currmin, TFS);
         }
 
         getmindel(sdir.second, currmin, max);
@@ -168,10 +166,9 @@ int main()
     }
 
     std::uint64_t total{0};
-    // printTree(dir, "", total);
-    // std::cout << total << std::endl;
+    printTree(dir, "", total);
+    std::cout << total << std::endl;
     std::uint64_t max = dir->getTFS();
-    // std::cout << dir->getTFS() - 40000000 << std::endl;
     getmindel(dir, dir->getTFS() - 40000000, max);
     std::cout << max << std::endl;
 
