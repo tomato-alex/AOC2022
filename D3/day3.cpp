@@ -8,7 +8,7 @@
 #include <vector>
 #include <set>
 
-std::uint64_t stringSplitSortCalc(const std::string data)
+std::uint64_t stringSplitSortCalc(const std::string &data)
 {
     std::string s1 = data.substr(0, data.length() / 2);
     std::string s2 = data.substr(data.length() / 2, data.length());
@@ -34,7 +34,7 @@ std::uint64_t stringSplitSortCalc(const std::string data)
     return total;
 }
 
-std::uint64_t elfGroups(const std::vector<std::string> sV)
+std::uint64_t elfGroups(const std::vector<std::string> &sV)
 {
     std::uint64_t total{0};
     for (auto i : sV.at(0))

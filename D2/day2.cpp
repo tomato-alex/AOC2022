@@ -4,21 +4,22 @@
 #include <map>
 #include <utility>
 
-int xyz(const std::string data, const std::map<char, int> scores)
+int xyz(const std::string &data, const std::map<char, int> &scores)
 {
     int score = 0;
-    if (data.at(0) - static_cast<char>(data.at(2) - 23) == -1 || data.at(0) - static_cast<char>(data.at(2) - 23) == 2)
+    int pos = static_cast<char>(data.at(2) - 23);
+    if (data.at(0) - pos == -1 || data.at(0) - pos == 2)
     {
         score += 6;
     }
-    else if (data.at(0) == static_cast<char>(data.at(2) - 23))
+    else if (data.at(0) == pos)
     {
         score += 3;
     }
-    score += scores.at(static_cast<char>(data.at(2) - 23));
+    score += scores.at(pos);
     return score;
 }
-int wld(const std::string data, const std::map<char, int> scores)
+int wld(const std::string &data, const std::map<char, int> &scores)
 {
     int score = 0;
     char play = ' ';

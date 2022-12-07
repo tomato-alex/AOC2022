@@ -23,9 +23,8 @@ std::vector<int> dataPreprocess(const std::string &data)
     int tmpint;
     std::stringstream ss{data};
     std::string sshelper;
-    while (!ss.eof())
+    while (ss >> sshelper)
     {
-        ss >> sshelper;
         if (std::stringstream(sshelper) >> tmpint)
         {
             args.push_back(tmpint);
@@ -36,9 +35,9 @@ std::vector<int> dataPreprocess(const std::string &data)
 
 void printMatrix2(const std::vector<std::deque<std::string>> &matrix)
 {
-    for (auto i : matrix)
+    for (const auto &i : matrix)
     {
-        for (auto j : i)
+        for (const auto &j : i)
         {
             std::cout << j;
         }
@@ -48,8 +47,8 @@ void printMatrix2(const std::vector<std::deque<std::string>> &matrix)
 
 int findLongest(const std::vector<std::vector<std::string>> &matrix)
 {
-    int longest = 0;
-    for (auto i : matrix)
+    int longest = matrix[0].size();
+    for (const auto &i : matrix)
     {
         if (i.size() > longest)
             longest = i.size();
@@ -59,103 +58,52 @@ int findLongest(const std::vector<std::vector<std::string>> &matrix)
 
 std::vector<std::deque<std::string>> VStoVDSTransform(const std::vector<std::string> &tp)
 {
-    std::vector<std::vector<std::string>> inputdata;
-    for (auto row : tp)
-    {
-        std::string shelper = "";
-        std::vector<std::string> vhelper;
-        int cntr = 0;
+    std::vector<std::deque<std::string>> res(tp[0].size() / 4 + 1);
 
-        for (auto cell : row)
-        {
-            if (cell != ' ' && cntr == 0)
-            {
-                shelper += cell;
-                if (cell == ']')
-                {
-                    vhelper.push_back(shelper);
-                    shelper = "";
-                }
-            }
-            if (cell == ' ' && cntr == 0)
-            {
-                shelper = "";
-                ++cntr;
-            }
-            if (cell == ' ' && cntr > 0)
-            {
-                if (cntr == 4)
-                {
-                    vhelper.push_back("   ");
-                    cntr = 0;
-                }
-                ++cntr;
-            }
-            if (cell != ' ' && cntr > 0)
-            {
-                shelper += cell;
-                cntr = 0;
-            }
-        }
-
-        inputdata.push_back(vhelper);
-    }
-    inputdata.pop_back();
-    int longest = findLongest(inputdata);
-    for (auto i : inputdata)
+    std::string shelper = "";
+    for (auto &row : tp)
     {
-        while (i.size() < longest)
+        int wordcntr = 0;
+        for (int i{0}; i < tp[0].size(); i += 4)
         {
-            i.push_back("   ");
+            shelper = row.substr(i, 3);
+            if (shelper != "   ")
+            {
+                res[wordcntr].push_back(shelper);
+            }
+            ++wordcntr;
         }
     }
 
-    std::vector<std::deque<std::string>> res(inputdata[0].size());
-    for (auto &row : inputdata)
-    {
-        int cntr = 0;
-        for (auto &cell : row)
-        {
-            if (cell != "   ")
-            {
-                res[cntr].push_back(cell);
-            }
-            ++cntr;
-            if (cntr >= tp[0].size())
-            {
-                break;
-            }
-        }
-    }
     return res;
 }
 
 std::vector<std::deque<std::string>> processMatrix2(std::vector<std::deque<std::string>> matrix, const std::vector<int> &args, Mode m)
 {
+    // Initialize counter and temporary deque
+    int cntr = args[0];
+
+    // Process based on mode
     if (m == Mode::append)
     {
-        int cntr = args[0];
+        // Append elements from source row to destination row
         while (cntr-- > 0)
         {
             matrix[args[2] - 1].push_front(matrix[args[1] - 1].front());
             matrix[args[1] - 1].pop_front();
         }
     }
-    if (m == Mode::keep)
+    else if (m == Mode::keep)
     {
-        int cntr = args[0];
-        std::deque<std::string> tmp;
-        while (cntr-- != 0)
+        // Move elements from source row to destination row
+        while (cntr-- > 0)
         {
-            tmp.push_back(matrix[args[1] - 1].front());
+            matrix[args[2] - 1].push_front(matrix[args[1] - 1].front());
             matrix[args[1] - 1].pop_front();
         }
-        while (!tmp.empty())
-        {
-            matrix[args[2] - 1].push_front(tmp.back());
-            tmp.pop_back();
-        }
     }
+
+    // Return updated matrix
     return matrix;
 }
 
@@ -164,6 +112,17 @@ int main()
     auto start = std::chrono::high_resolution_clock::now();
     std::ifstream items("inputday5.txt");
     std::string data;
+
+    std::vector<std::deque<std::string>> hardcodedinp{
+        {"J", "Z", "G", "V", "T", "D", "B", "N"},
+        {"F", "P", "W", "D", "M", "R", "S"},
+        {"Z", "S", "R", "C", "V"},
+        {"G", "H", "P", "Z", "J", "T", "R"},
+        {"F", "Q", "Z", "D", "N", "J", "C", "T"},
+        {"M", "F", "S", "G", "W", "P", "V", "N"},
+        {"Q", "P", "B", "V", "C", "G"},
+        {"N", "P", "B", "Z"},
+        {"J", "P", "W"}};
 
     std::vector<std::string> tmpinput;
     std::vector<std::deque<std::string>> inputdata2;
@@ -179,12 +138,13 @@ int main()
             }
 
             inputMode = InputMode::m2;
+            tmpinput.pop_back();
             inputdata2 = VStoVDSTransform(tmpinput);
         }
         else if (inputMode == InputMode::m2)
         {
             std::vector<int> args = dataPreprocess(data);
-            inputdata2 = processMatrix2(inputdata2, args, Mode::keep);
+            inputdata2 = processMatrix2(inputdata2, args, Mode::append);
         }
     }
 
